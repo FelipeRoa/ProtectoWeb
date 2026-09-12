@@ -32,3 +32,10 @@ form div{
     flex-direction: column;
     gap: 0.2rem;
 }
+
+input{
+    border: transparent;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    padding: 0.75rem;
+}
