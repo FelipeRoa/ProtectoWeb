@@ -50,6 +50,8 @@ button{
     color: white;
     cursor: pointer;
     margin-top: 0.5rem;
+    margin-right: 0.5rem;
+    align-self: flex-end;
 }
 
 button:hover{
