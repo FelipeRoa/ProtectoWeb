@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soporte - Historial de Incidencias</title>
+    <link rel="stylesheet" href="../css/usu.css">
+</head>
+<body>
+    <header>
+        <h1>Historial de Incidencias</h1>
+        <nav>
+            <nav>
+            <a href="panel.html">Panel</a> | 
+            <a href="incidencias.html">Historial</a> | 
+            <a href="../index.html">Salir</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Consultar Historial por Sucursal</h2>
+            
+            <label>Filtrar Sucursal: 
+                <select>
+                    <option>Todas las sucursales</option>
+                    <option>Sucursal Central</option>
+                    <option>Sucursal sur</option>
+                    <option>Sucursal norte</option>
+                </select>
+            </label>
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID Falla</th>
+                        <th>Sucursal</th>
+                        <th>Equipo</th>
+                        <th>Descripción</th>
+                        <th>Fecha Reporte</th>
+                        <th>Fecha Resolución</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Falla-1</td>
+                        <td>Sucursal Central</td>
+                        <td>a-1 (Caja 1)</td>
+                        <td>Fallo en la pantalla táctil</td>
+                        <td>2026-09-01</td>
+                        <td>2026-09-02</td>
+                    </tr>
+                    <tr>
+                        <td>Falla-2</td>
+                        <td>Sucursal central</td>
+                        <td>a-2 (Balanza)</td>
+                        <td>Descalibración en el peso</td>
+                        <td>2026-09-05</td>
+                        <td>En revisión</td>
+                    </tr>
+                    <tr>
+                        <td>Falla-3</td>
+                        <td>Sucursal Central</td>
+                        <td>a-3 (impr)</td>
+                        <td>Fallo en el láser</td>
+                        <td>2026-09-10</td>
+                        <td>Sin resolver</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+</html>
