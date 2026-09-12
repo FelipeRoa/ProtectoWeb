@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soporte - Detalle de Sucursal</title>
+    <link rel="stylesheet" href="../css/usu.css">
+</head>
+<body>
+    <header>
+        <h1>Detalle de Sucursal: Central</h1> 
+        <nav>
+            <nav>
+            <a href="panel.html">Panel</a> | 
+            <a href="incidencias.html">Historial</a> | 
+            <a href="../index.html">Salir</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Equipos de la Sucursal</h2>
+            
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID Equipo</th>
+                        <th>Nombre</th>
+                        <th>Estado Actual</th>
+                        <th>Actualizar Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>a-1</td>
+                        <td>Caja Registradora 1</td>
+                        <td>Con falla</td>
+                        <td>
+                            <select>
+                                <option value="funcionando">Funcionando</option>
+                                <option value="falla" selected>Con falla</option>
+                                <option value="fuera">Fuera de servicio</option>
+                            </select>
+                            <button type="button">Guardar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>a-2</td>
+                        <td>Balanza Digital</td>
+                        <td>Funcionando</td>
+                        <td>
+                            <select>
+                                <option value="funcionando" selected>Funcionando</option>
+                                <option value="falla">Con falla</option>
+                                <option value="fuera">Fuera de servicio</option>
+                            </select>
+                            <button type="button">Guardar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>a-3</td>
+                        <td>Impresoras</td>
+                        <td>Fuera de servicio</td>
+                        <td>
+                            <select>
+                                <option value="funcionando">Funcionando</option>
+                                <option value="falla">Con falla</option>
+                                <option value="fuera" selected>Fuera de servicio</option>
+                            </select>
+                            <button type="button">Guardar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+</html>
