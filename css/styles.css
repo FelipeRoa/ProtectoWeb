@@ -1,13 +1,17 @@
 body{
+    box-sizing: border-box;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    font-size: 18px;
 }
 
 h1{
     text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
 }
 
 form{
@@ -20,8 +24,7 @@ form{
     width: 100%;
     max-width: 400px;
     padding: 10px;
-}
-
-form #correo, #clave{
-    display: flex;
+    gap: 1rem;
+    background-color: aqua;
+    font-weight: bold;
 }
