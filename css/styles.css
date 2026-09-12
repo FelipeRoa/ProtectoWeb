@@ -26,3 +26,9 @@ form{
     background-color: aqua;
     font-weight: bold;
 }
+
+form div{
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
