@@ -1,3 +1,67 @@
-*{ /* Definir que toda la pagina use esta fuente */
+body{
+    box-sizing: border-box;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 18px;
+    background-color: whitesmoke;
+}
+
+h1{
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: -0.5rem;
+    margin-left: 1rem;
+    color: #1e293b;
+    text-decoration: underline;
+}
+
+p{
+    text-align: center;
+    margin-left: 1rem;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: solid;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    gap: 1rem;
+    background-color: white;
+    font-weight: bold;
+}
+
+form div{
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+input{ 
+    font-size: 1rem;
+    padding: 0.75rem;
+}
+
+button{
+    padding: 0.7rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 1rem;
+    background-color: lightseagreen;
+    color: white;
+    cursor: pointer;
+    margin-top: 0.1rem;
+    margin-right: 1rem;
+    align-self: flex-end;
+}
+
+button:hover{
+    background-color: rgb(31, 145, 139);
 }
