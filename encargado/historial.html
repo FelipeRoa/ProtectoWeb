@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial Local</title>
+
+    
+    <link rel="stylesheet" href="../css/usu.css">
 </head>
 <body>
     <header>
@@ -16,15 +19,49 @@
     </header>
     
     <main>
-        <section>
-            <ul>
-                <li>Incidencia 1</li>
-                <li>Incidencia 2</li>
-                <li>Incidencia 3</li>
-                <li>Incidencia 4</li>
-                <li>Incidencia 5</li>
-            </ul>
-        </section>
+      <table>
+            <thead> <!-- el cabezon / table head -->
+                <tr> <!-- cosa para hacer fila de una tabla omege / table head en ingles -->
+                    <th>Incidencias</th>
+                    <th>Equipo</th>
+                    <th>Estado</th>
+                    <th>Fecha</th> <!-- deberia crearlo automaticamente cuando funcione la pag,  digo deberia detectar la fecha actual -->
+                    <th>Detalles</th>
+                </tr>
+            </thead>
+            <tbody> <!-- body? basicamente el cuerpo openinglish.com -->
+                <tr>
+                    <td>1</td>
+                    <td>3</td>
+                    <td><span class="rol rol-enc">Falla en imaginacion</span></td>
+                    <td>29-1001-30</td>
+                    <td>
+                        <button class="bot-icon">Ver detalles</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody> <!-- body? basicamente el cuerpo openinglish.com -->
+                <tr>
+                    <td>2</td>
+                    <td>21</td>
+                    <td><span class="rol rol-enc">Falla en la tierra</span></td>
+                    <td>6-21-86</td>
+                    <td>
+                        <button class="bot-icon">Ver detalles</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody> <!-- body? basicamente el cuerpo openinglish.com -->
+                <tr>
+                    <td>3</td>
+                    <td>31</td>
+                    <td><span class="rol rol-enc">Falla en cerru</span></td>
+                    <td>9-1301-3</td>
+                    <td>
+                        <button class="bot-icon">Ver detalles</button>
+                    </td>
+                </tr>
+            </tbody>
     </main>
 </body>
 </html>
