@@ -5,9 +5,12 @@
         <meta name="viewport" content="width=device-width", initial-scale="1.0">
         <!-- metadatos para adaptar la página a dispositivos móviles -->
         <title>MarketOps - Inicio de Sesión</title>
-
         <link rel="stylesheet" href="css/styles.css">
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> <!-- cargamos alpinejs-->
     </head>
+
+    <body x-data="loginApp()"></body> <!--MUY IMPORTANTE ESTO, ya que aca estamos asignando alpinejs a toda la pagina, es el cerebro, donde nosotros escribiremos las cosas y quedaran guardados-->
+
     <header>
         <nav>
             <a href="administrador/usuarios.html">Administrador</a>
@@ -19,20 +22,51 @@
         <main>
             <h1>MarketOps</h1>
             <p>A continuación escriba sus datos</p>
-            <!-- Formulario -->
-            <form id="formLogin" action="" method="">
-                <div> <!-- contenedor para ingresar correo electrónico-->
-                    <label for="correo">Correo Electrónico</label>
-                    <input type="email" name="correo" id="correo" placeholder="usuario@marketops.com" required>
-                </div>
 
-                <div> <!-- contenedor para ingresar la contraseña-->
-                    <label for="clave">Contraseña</label>
-                    <input type="password" id="clave" name="clave" placeholder="********" required>
-                </div>
+            <template x-if="mensajeError">
+            <div style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 5px;" x-text="mensajeError"></div>
+        </template> <!-- esto es estetica, simplemente si se inicia sesion sin anotar nada se genera el mensaje de error-->
 
-                <button type="submit">Iniciar Sesión</button> <!-- botón para confirmar el ingreso al portal-->
+           <form @submit.prevent="validarLogin">
+            <div> 
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" name="correo" id="correo" x-model="correo" placeholder="usuario@marketops.com"> <!-- los x-model, son las respuestas en milisegundos de lo que nosotros escribimos, osea al iniciar sesion-->
+            </div>
+
+            <div> 
+                <label for="clave">Contraseña</label>
+                <input type="password" id="clave" name="clave" x-model="clave" placeholder="********"> <!-- los x-model, son las respuestas en milisegundos de lo que nosotros escribimos, osea al iniciar sesion-->
+            </div>
+
+            <button type="submit">Iniciar Sesión</button> <!--bonton con el que confirmamos el ingreso-->
             </form>
         </main>
+
+        <script> // de aca hasta abajo generamos las reglas de iniciar sesion
+        function loginApp() {
+            return {
+                correo: '',
+                clave: '',
+                mensajeError: '',
+                validarLogin() {
+                    if (!this.correo || !this.clave) {
+                        this.mensajeError = 'Por favor, complete todos los campos obligatorios.';
+                        return;
+                    } // aca validamos los datos, si estan erroneos suelta el mensaje de error
+                    
+                    if (this.correo.includes('soporte')) {
+                        alert('¡Inicio de sesión exitoso! Redirigiendo al panel de Soporte...');
+                        window.location.href = 'soporte/panel.html';
+                    } else if (this.correo.includes('admin')) {
+                        alert('¡Inicio de sesión exitoso! Redirigiendo a Administración...');
+                        window.location.href = 'administrador/usuarios.html';
+                    } else {
+                        alert('¡Inicio de sesión exitoso!');
+                        window.location.href = 'encargado/inicio.mi-sucursal.html'; // desde aca hasta el codigo 57 generamos la regla de que si indica lo soporte, admin o encargado en el correo los dirigue a esas clases, importantisima esto.
+                    }
+                }
+            }
+        }
+    </script>
     </body>
 </html>
