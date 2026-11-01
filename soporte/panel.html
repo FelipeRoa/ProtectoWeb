@@ -4,8 +4,9 @@
     <title>MarketOps - Panel de Soporte</title>
     <title>MarketOps - Panel General de Soporte</title>
     <link rel="stylesheet" href="../css/panelsoport.css"> <!--con esto dejamos bonito la paguina-->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> <!-- agregamos alpinejs a la clase-->
 </head>
-<body>
+<body x-data="panelSoporte()">
     <header> <!--link de separación-->
         <h1>Panel de Soporte</h1>
         <nav>
@@ -17,40 +18,72 @@
 
     <main>  <!--eligir los fitros de gravedad-->
         <section>  
-            <p><strong>Fallas globales: </strong> 3 </p>
+            <p><strong>Fallas globales: </strong> <span x-text="totalFallas"></span> </p> <!-- antes se ocupaban 3 contadores, y ahora es global, osea depende de los casos que coloquemos-->
             <label>Filtro : 
-                <select><option> Todas </option><option> Alta </option><option> Media </option> <option> Sin falla </option> </select>
+                <select x-model="gravedadSeleccionada">
+                    <option value="Todas">Todas</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Media">Media</option> 
+                    <option value="Sin falla">Sin falla</option>
+                    </select>
             </label>
         </section>
 
         <section>
             <table border="1">
                 <thead>
-                    <tr><th>Sucursal</th><th>Fallas</th><th>Gravedad</th><th>Acción</th></tr> 
+                    <tr>
+                        <th>Sucursal</th>
+                        <th>Fallas</th>
+                        <th>Gravedad</th>
+                        <th>Acción</th>
+                    </tr> 
                 </thead>
-                <tbody> <!--de aca para abajo describimos las sucursales-->
-                    <tr> 
-                        <td>Sucursal Central</td> 
-                        <td>3</td>
-                        <td>Alta</td>
-                        <td><a href="detalle-sucursal.html">Ver Detalle</a></td>
-                    </tr>
-                    <tr>
-                        <td>Sucursal Norte</td>
-                        <td>0</td>
-                        <td>Sin falla</td>
-                        <td><a href="detalle-sucursal.html">Ver Detalle</a></td>
-                    </tr>
-                    <tr>
-                        <td>Sucursal sur</td>
-                        <td>0</td>
-                        <td>Sin falla</td>
-                        <td><a href="detalle-sucursal.html">Ver Detalle</a></td>
-                    </tr>
+                <tbody> <!-- generamos un bucle para mostrar las filas de los paneles-->
+                    <template x-for="sucursal in sucursalesFiltradas" :key="sucursal.nombre">
+                        <tr> 
+                            <td x-text="sucursal.nombre"></td> 
+                            <td x-text="sucursal.fallas"></td>
+                            <td>
+                                <span x-text="sucursal.gravedad" :style="obtenerEstilo(sucursal.gravedad)"></span>
+                            </td>
+                            <td><a href="detalle-sucursal.html">Ver Detalle</a></td>
+                        </tr>
+                    </template>
+                    <template x-if="sucursalesFiltradas.length === 0"><!--por si no hay nada agregamos el mensaje que soltara-->
+                        <tr>
+                            <td colspan="4" style="text-align: center;">No hay sucursales con esta gravedad.</td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </section>
     </main>
+
+    <script> // aplicamos lo de arriba
+        function panelSoporte() {
+            return {
+                gravedadSeleccionada: 'Todas',
+                sucursales: [
+                    { nombre: 'Sucursal Central', fallas: 3, gravedad: 'Alta' },
+                    { nombre: 'Sucursal Norte', fallas: 0, gravedad: 'Sin falla' },
+                    { nombre: 'Sucursal Sur', fallas: 0, gravedad: 'Sin falla' } // generamos los datos de prueba
+                ],
+                get totalFallas() {
+                    return this.sucursales.reduce((acc, s) => acc + s.fallas, 0); // con esto sumamos las fallas globales
+                },
+                get sucursalesFiltradas() { // aca filtramos segun la gravedad
+                    if (this.gravedadSeleccionada === 'Todas') return this.sucursales; 
+                    return this.sucursales.filter(s => s.gravedad.toLowerCase() === this.gravedadSeleccionada.toLowerCase());
+                },
+                obtenerEstilo(gravedad) { // Estilos visual para esta clase
+                    if (gravedad === 'Alta') return 'color: red; font-weight: bold;';
+                    if (gravedad === 'Media') return 'color: orange; font-weight: bold;';
+                    return 'color: green; font-weight: bold;';
+                }
+            }
+        }
+    </script>
     <script src="../js/main.js"></script>
 </body>
 </html>

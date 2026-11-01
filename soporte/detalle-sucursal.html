@@ -4,76 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soporte - Detalle de Sucursal</title>
-    <link rel="stylesheet" href="../css/usu.css"> <!--con esto dejamos bonito la paguina-->
+    <link rel="stylesheet" href="../css/usu.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> <!-- Aqui estamos cargadno el alpinejs junto con un defer lo cual hace que cargue ordenado el script-->>
 </head>
-<body>
+<body x-data="detalleSucursal()"> <!-- Aca estamos dicienndo que el body tiene que trabajar con el alpinejs y con todas las propiedades y métodos definidos de detalle-sucursal -->
     <header>
         <h1>Detalle de Sucursal: Central</h1> 
         <nav>
-            <nav>
             <a href="panel.html">Panel</a> | 
             <a href="incidencias.html">Historial</a> | 
             <a href="../index.html">Salir</a>
         </nav>
     </header>
 
-    <main>
+    <main> <!-- de aca para abajo vamos a aplicar todo lo relacionado con la visualización y edición de los equipos de la sucursal y quede bien bonito-->
         <section>
             <h2>Equipos de la Sucursal</h2>
+            <template x-if="mensaje">
+            </template>  <!-- aca dejamos creado un mensaje al guardar, sino hay nada obviamente no se muestra nada en la pantalla-->
+
+            <div style="margin-bottom: 15px;">
+                <label for="buscador">Filtrar equipos: </label>
+                <input id="buscador" type="text" x-model="busqueda" placeholder="Buscar por ID o nombre..." style="padding: 5px; width: 250px;">
+            </div> <!-- ocupamos el metodo x-modelo el cual nos ayuda a poder buscar algun equipo o lo que deseemos en milisegundos y aparezca en la pantalla, osea buscamos el id o nombre del equipo y aparece en pantalla-->
             
             <table border="1">
                 <thead>
                     <tr>
-                        <th>ID Equipo</th> <!--titulos de cada cuadro en la tabla-->
+                        <th>ID Equipo</th>
                         <th>Nombre</th>
                         <th>Estado Actual</th>
                         <th>Actualizar Estado</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>a-1</td> <!--primer instrumento y asi sigue pa abajo equisde-->
-                        <td>Caja Registradora 1</td>
-                        <td>Con falla</td>
-                        <td>
-                            <select>
-                                <option value="funcionando">Funcionando</option> <!--eligir la opcion de como esta lo instrumental y lo mismo para abajo-->
-                                <option value="falla" selected>Con falla</option> 
-                                <option value="fuera">Fuera de servicio</option>
-                            </select>
-                            <button type="button">Guardar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>a-2</td>
-                        <td>Balanza Digital</td>
-                        <td>Funcionando</td>
-                        <td>
-                            <select>
-                                <option value="funcionando" selected>Funcionando</option>
-                                <option value="falla">Con falla</option>
-                                <option value="fuera">Fuera de servicio</option>
-                            </select>
-                            <button type="button">Guardar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>a-3</td>
-                        <td>Impresoras</td>
-                        <td>Fuera de servicio</td>
-                        <td>
-                            <select>
-                                <option value="funcionando">Funcionando</option>
-                                <option value="falla">Con falla</option>
-                                <option value="fuera" selected>Fuera de servicio</option>
-                            </select>
-                            <button type="button">Guardar</button>
-                        </td>
-                    </tr>
+                    <template x-for="equipo in equiposFiltrados" :key="equipo.id"> <!--en vez de la fila estatica de HTML, el template recorre en bucle la lista de equipos, y gracias al key se identifica el equipo-->
+                        <tr>
+                            <td x-text="equipo.id"></td>
+                            <td x-text="equipo.nombre"></td> <!-- reemplazamos los valores estaticas por los reales-->
+                            <td>
+                                <span x-text="equipo.estado" :style="obtenerEstilo(equipo.estado)"></span>
+                            </td>
+                            <td>
+                                <select x-model="equipo.nuevoEstado"> <!-- guardamos la opcion que eligamos-->
+                                    <option value="Funcionando">Funcionando</option>
+                                    <option value="Con falla">Con falla</option>
+                                    <option value="Fuera de servicio">Fuera de servicio</option>
+                                </select>
+                                <button type="button" @click="guardarCambios(equipo)">Guardar</button> <!--y aqui guardamos esa opcion, generando el camio en ese apartado-->
+                            </td>
+                        </tr>
+                    </template>
+                    <template x-if="equiposFiltrados.length === 0"> <!--si no hay nada, no se genera ningun filtro nuevo-->
+                        <tr>
+                            <td colspan="4" style="text-align: center;">No se encontraron equipos.</td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </section>
     </main>
+
+    <script> //de aca para abajo usamos todo lo de antes
+        function detalleSucursal() {
+            return {
+                busqueda: '',
+                mensaje: '',
+                equipos: [
+                    { id: 'a-1', nombre: 'Caja Registradora 1', estado: 'Con falla', nuevoEstado: 'Con falla' },
+                    { id: 'a-2', nombre: 'Balanza Digital', estado: 'Funcionando', nuevoEstado: 'Funcionando' },
+                    { id: 'a-3', nombre: 'Impresoras', estado: 'Fuera de servicio', nuevoEstado: 'Fuera de servicio' } // de aqui hasta la linea 71 son datos de pruebas
+                ],
+                get equiposFiltrados() {
+                    if (!this.busqueda) return this.equipos;
+                    return this.equipos.filter(eq => 
+                        eq.id.toLowerCase().includes(this.busqueda.toLowerCase()) ||
+                        eq.nombre.toLowerCase().includes(this.busqueda.toLowerCase()) //aca filtramos las propiedades de la tabla, sin esto no aparece nada
+                    );
+                },
+                guardarCambios(equipo) { // aca guardamos los cambios como dice el nombre, sin esto queda todo estatico y no se cambia nada
+                    equipo.estado = equipo.nuevoEstado;
+                    this.mensaje = `¡Estado del equipo ${equipo.id} actualizado con éxito a "${equipo.estado}"!`;
+                    setTimeout(() => {
+                        this.mensaje = '';
+                    }, 3500);
+                },
+  
+                obtenerEstilo(estado) { // y aqui igual como dice el nombre se obtiene el estilo, sin esto no tienene los colores bonitos
+                    if (estado === 'Funcionando') return 'color: green; font-weight: bold;';
+                    if (estado === 'Con falla') return 'color: orange; font-weight: bold;';
+                    return 'color: red; font-weight: bold;';
+                }
+            }
+        }
+    </script>
     <script src="../js/main.js"></script>
 </body>
 </html>
