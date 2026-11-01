@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarketOps - Gestion de Usuarios</title>
     <link rel="stylesheet" href="../css/usu.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>  <!-- cargamos alpinejs-->c
 </head>
-<body>
+<body x-data="adminUsuariosApp()"> <!--asignando alpinejs a la clase-->
     <header>
         <nav>
             <span>Administrador: Usuario</span>
@@ -18,100 +19,173 @@
     <main>
         <div class="encabezado-lol">
             <h2>Gestion de Usuarios</h2>
-            <button id="nuevoUsAdmin">+ Nuevo Usuario </button>
+            <!-- Botón que abre el modal para crear un usuario nuevo -->
+            <button id="nuevoUsAdmin" @click="prepararCreacion()">+ Nuevo Usuario </button>
         </div>
 
+        <template x-if="mensaje">
+            <div style="background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px; border-radius: 5px; text-align: center;" x-text="mensaje"></div>
+        </template> <!--cuando editemos algo o agreguemos uno nuevo, sale un mensaje de exito-->
+
+        <!-- TABLA DE USUARIOS -->
         <table>
-            <thead> <!-- el cabezon / table head -->
-                <tr> <!-- cosa para hacer fila de una tabla omege / table head en ingles -->
+            <thead>
+                <tr>
                     <th>Nombre</th>
                     <th>Correo</th>
                     <th>Rol</th>
-                    <th>Sucursal</th>
+                    <th>N° Sucursal</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody> <!-- body? basicamente el cuerpo openinglish.com -->
-                <tr>
-                    <td>Usuario generico 2 </td>
-                    <td>usuario.generico2@marketops.com</td>
-                    <td><span class="rol rol-enc">Encargado</span></td>
-                    <td>Muxaxao Carreo</td>
-                    <td>
-                        <button class="bot-icon">Editar</button>
-                        <button class="bot-elim">Eliminar</button>
-                    </td>
-                </tr>
-            </tbody>
-
-            <tbody> <!-- body? basicamente el cuerpo openinglish.com -->
-                <tr>
-                    <td>Usuario generico 3 </td>
-                    <td>usuario.generico3@marketops.com</td>
-                    <td><span class="rol rol-tec">Tecnico</span></td>
-                    <td>AAAAAAAAAAAAAAAAA</td>
-                    <td>
-                        <button class="bot-icon">Editar</button>
-                        <button class="bot-elim">Eliminar</button>
-                    </td>
-                </tr>
-            </tbody>
-
-
-            <tbody> <!-- body? basicamente el cuerpo openinglish.com -->
-                <tr>
-                    <td>El volado de la esquina</td>
-                    <td>esquina.man@marketops.coms</td>
-                    <td><span class="rol rol-ad">Administrador</span></td>
-                    <td>La esquina</td>
-                    <td>
-                        <button class="bot-icon">Editar</button>
-                        <button class="bot-elim">Eliminar</button>
-                    </td>
-                </tr>
+            <tbody>
+                <template x-for="user in usuarios" :key="user.id"> <!-- recorreo la lista y genera una tabla (x-for)-->
+                    <tr>
+                        <td x-text="user.nombre"></td> <!-- inserta el nombre (x-text)-->
+                        <td x-text="user.correo"></td>
+                        <td>
+                            <span :class="'rol ' + obtenerClaseRol(user.rol)" x-text="user.rol"></span> <!-- class es mas estetica, para asignar el CSS a cada rol con sus colores-->
+                        </td>
+                        <td x-text="user.sucursal" style="font-weight: bold;"></td> <!-- asignamos el numero de la sucursal, arreglando el comentario de entrega 1 pipipipi-->
+                        <td>
+                            <button class="bot-icon" @click="cargarParaEditar(user)">Editar</button> <!-- cargamos para editar-->
+                            <button class="bot-elim" @click="eliminarUsuario(user.id)">Eliminar</button> <!-- cargamos para eliminar-->
+                        </td>
+                    </tr>
+                </template> 
             </tbody>
         </table>
-            <div id="modaDeUsuario" class="acc-usu">
-                <form id="fromUsuario"> <!-- no se me ocurrio mejor chiste la vdd-->
-                    <h3>Nuevo Usuario</h3>
 
-                    <div>
-                        <label for="nombre">Nombre</label>
-                        <input type="text" id="nombre" name="nombre" required>
-                    </div>
+        <div id="modaDeUsuario" class="acc-usu" x-show="modalAbierto" style="display: none; margin-top: 20px; padding: 20px; border: 2px solid #0056b3; border-radius: 8px; background: #ffffff; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);"> <!--controlamos las ventanas del nuevo usario y editar, ademas de guardar o cancelar las cosas asi bien cool todo-->
+            <form @submit.prevent="guardarUsuario">
+                <h3 x-text="editandoId ? 'Editar Usuario' : 'Nuevo Usuario'"></h3>
 
-                    <div>
-                        <label for="correoUsuario">Correo</label>
-                        <input type="email" id="correoUsuario" name="correoUsuario" required>
-                    </div>
+                <div>
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" x-model="form.nombre" required>
+                </div>
 
-                    <div>
-                        <label for="rol">Rol</label>
-                        <select id="rol" name="rol" required>
-                            <option value="">Selecciona un rol</option>
-                            <option value="encargado">Encargado de Sucursal</option>
-                            <option value="tecnico">Tecnico de Soporte</option>
-                            <option value="admin">Administrador</option>
-                        </select>
-                    </div>
+                <div>
+                    <label for="correoUsuario">Correo</label>
+                    <input type="email" id="correoUsuario" x-model="form.correo" required>
+                </div>
 
-                    <div>
-                        <label for="sucursal">Sucursal (si aplica)</label>
-                        <select id="sucursal" name="sucursal">
-                            <option value="">No aplica</option>
-                            <option value="alicia">Pais de las maravillas</option>
-                            <option value="void">Uy mejor me</option>
-                            <option value="pobre">Maipu</option>
-                        </select>
-                    </div>
+                <div>
+                    <label for="rol">Rol</label>
+                    <select id="rol" x-model="form.rol" required>
+                        <option value="">Selecciona un rol</option>
+                        <option value="Encargado">Encargado de Sucursal</option>
+                        <option value="Tecnico">Tecnico de Soporte</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                </div>
 
-                    <div class="acc-form">
-                        <button type="button" id="botCancelin">Cancelar</button>
-                        <button type="submit">Guardar</button>
-                    </div>
-                </form>
-            </div>
+                <div>
+                    <label for="sucursal">Número de Sucursal Asignada</label>
+                    <input type="number" id="sucursal" x-model="form.sucursal" placeholder="Ej: 101" required>
+                </div>
+
+                <div class="acc-form" style="margin-top: 15px;">
+                    <button type="button" id="botCancelin" @click="modalAbierto = false" style="background-color: #6c757d; color: white;">Cancelar</button>
+                    <button type="submit" x-text="editandoId ? 'Actualizar Cambios' : 'Guardar'"></button>
+                </div>
+            </form>
+        </div> <!-- en si la estructura son muy similares a la parte de arriba, agradecido con el de arriba-->
     </main>
+
+<script> // aca como en todas las otras clases usamos lo de arriba
+        function adminUsuariosApp() {
+            return {
+                usuarios: [
+                    { id: 1, nombre: 'Usuario generico 2', correo: 'usuario.generico2@marketops.com', rol: 'Encargado', sucursal: 101 },
+                    { id: 2, nombre: 'Usuario generico 3', correo: 'usuario.generico3@marketops.com', rol: 'Tecnico', sucursal: 102 },
+                    { id: 3, nombre: 'El volado de la esquina', correo: 'esquina.man@marketops.com', rol: 'Administrador', sucursal: 100 }
+                ], // esto son los datos de prueba
+                
+                form: {
+                    nombre: '',
+                    correo: '',
+                    rol: '',
+                    sucursal: ''
+                },
+                
+                editandoId: null,
+                modalAbierto: false, 
+                mensaje: '',
+
+                prepararCreacion() {
+                    this.limpiarFormulario();
+                    this.modalAbierto = true;
+                },
+
+                cargarParaEditar(user) { 
+                    this.editandoId = user.id;
+                    this.form.nombre = user.nombre;
+                    this.form.correo = user.correo;
+                    this.form.rol = user.rol;
+                    this.form.sucursal = user.sucursal;
+                    this.modalAbierto = true;
+                },
+
+                guardarUsuario() {
+                    if (!this.form.nombre || !this.form.correo || !this.form.rol || !this.form.sucursal) {
+                        alert('Por favor, completa todos los campos obligatorios.');
+                        return;
+                    }
+
+                    if (this.editandoId) {
+                        let index = this.usuarios.findIndex(u => u.id === this.editandoId);
+                        if (index !== -1) {
+                            this.usuarios[index] = {
+                                id: this.editandoId,
+                                nombre: this.form.nombre,
+                                correo: this.form.correo,
+                                rol: this.form.rol,
+                                sucursal: this.form.sucursal
+                            };
+                            this.mensaje = '¡Usuario actualizado con éxito!';
+                        }
+                    } else {
+                        let nuevoId = this.usuarios.length > 0 ? Math.max(...this.usuarios.map(u => u.id)) + 1 : 1;
+                        this.usuarios.push({
+                            id: nuevoId,
+                            nombre: this.form.nombre,
+                            correo: this.form.correo,
+                            rol: this.form.rol,
+                            sucursal: this.form.sucursal
+                        });
+                        this.mensaje = '¡Usuario creado con éxito!';
+                    }
+
+                    this.modalAbierto = false; 
+                    this.limpiarFormulario();
+                    setTimeout(() => { this.mensaje = ''; }, 3500);
+                },
+
+                eliminarUsuario(id) {
+                    if (confirm('¿Estás seguro de eliminar este usuario?')) {
+                        this.usuarios = this.usuarios.filter(u => u.id !== id);
+                        this.mensaje = '¡Usuario eliminado correctamente!';
+                        setTimeout(() => { this.mensaje = ''; }, 3500);
+                    }
+                },
+
+                limpiarFormulario() {
+                    this.editandoId = null;
+                    this.form.nombre = '';
+                    this.form.correo = '';
+                    this.form.rol = '';
+                    this.form.sucursal = '';
+                },
+
+                obtenerClaseRol(rol) {
+                    if (rol === 'Encargado') return 'rol-enc';
+                    if (rol === 'Tecnico') return 'rol-tec';
+                    return 'rol-ad';
+                }
+            }
+        }
+    </script>
     <script src="../js/cosoBonito.js"></script>
 </body>
 </html>
