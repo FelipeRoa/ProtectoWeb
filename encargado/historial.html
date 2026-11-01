@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial Local</title>
-
-    
     <link rel="stylesheet" href="../css/usu.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> <!-- cargamos alpinejs-->
 </head>
-<body>
+<body x-data="historialApp()"> <!--asignando alpinejs a la clase-->
     <header>
         <h1>Incidencias pasadas</h1>
         <nav>
@@ -19,6 +18,18 @@
     </header>
     
     <main>
+
+        <template x-if="detalleSeleccionado">
+            <div style="background-color: #e2e3e5; color: #383d41; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+                <h3 style="margin-top: 0;">Detalle de la Incidencia</h3>
+                <p><strong>ID:</strong> <span x-text="detalleSeleccionado.id"></span></p>
+                <p><strong>Equipo ID:</strong> <span x-text="detalleSeleccionado.equipo"></span></p>
+                <p><strong>Descripción:</strong> <span x-text="detalleSeleccionado.estado"></span></p>
+                <p><strong>Fecha de registro:</strong> <span x-text="detalleSeleccionado.fecha"></span></p>
+                <button @click="detalleSeleccionado = null" style="padding: 5px 10px; cursor: pointer;">Cerrar detalles</button>
+            </div>
+        </template> <!--generamos una ventana emergente mostrando los detalles de la sucursal (muy hermoso esto)-->
+
       <table>
             <thead> <!-- el cabezon / table head -->
                 <tr> <!-- cosa para hacer fila de una tabla omege / table head en ingles -->
@@ -29,39 +40,39 @@
                     <th>Detalles</th>
                 </tr>
             </thead>
-            <tbody> <!-- body? basicamente el cuerpo openinglish.com -->
-                <tr>
-                    <td>1</td>
-                    <td>3</td>
-                    <td><span class="rol rol-enc">Falla en imaginacion</span></td>
-                    <td>29-1001-30</td>
-                    <td>
-                        <button class="bot-icon">Ver detalles</button>
-                    </td>
-                </tr>
+            <tbody>
+                <template x-for="item in historial" :key="item.id"> <!-- x-for recorre la lista total de equipos-->
+                    <tr>
+                        <td x-text="item.id"></td>
+                        <td x-text="item.equipo"></td> <!-- x-text insertam el nombre y el estado en cada celda de la tabla-->
+                        <td>
+                            <span class="rol rol-enc" x-text="item.estado"></span>
+                        </td>
+                        <td x-text="item.fecha"></td>
+                        <td>
+                            <button class="bot-icon" @click="verDetalles(item)">Ver detalles</button>
+                        </td>
+                    </tr>
+                </template>
             </tbody>
-            <tbody> <!-- body? basicamente el cuerpo openinglish.com -->
-                <tr>
-                    <td>2</td>
-                    <td>21</td>
-                    <td><span class="rol rol-enc">Falla en la tierra</span></td>
-                    <td>6-21-86</td>
-                    <td>
-                        <button class="bot-icon">Ver detalles</button>
-                    </td>
-                </tr>
-            </tbody>
-            <tbody> <!-- body? basicamente el cuerpo openinglish.com -->
-                <tr>
-                    <td>3</td>
-                    <td>31</td>
-                    <td><span class="rol rol-enc">Falla en cerru</span></td>
-                    <td>9-1301-3</td>
-                    <td>
-                        <button class="bot-icon">Ver detalles</button>
-                    </td>
-                </tr>
-            </tbody>
+        </table>
     </main>
+
+    <script> // aplicamos lo de arriba
+        function historialApp() {
+            return {
+                historial: [
+                    { id: 1, equipo: 3, estado: 'Falla en imaginacion', fecha: '2026-10-29' },
+                    { id: 2, equipo: 21, estado: 'Falla en la tierra', fecha: '2026-06-21' },
+                    { id: 3, equipo: 31, estado: 'Falla en circuito', fecha: '2026-09-13' } // datos de prueba
+                ],
+                detalleSeleccionado: null,
+
+                verDetalles(item) {
+                    this.detalleSeleccionado = item; //simplemente sirve para mostrar el detalle de lo seleccionado
+                }
+            }
+        }
+    </script>
 </body>
 </html>

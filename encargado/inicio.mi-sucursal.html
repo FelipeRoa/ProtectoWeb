@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio - Mi Sucursal</title>
-    
     <link rel="stylesheet" href="../css/usu.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> <!-- agregamos alpinejs a la clase-->
 </head>
 
-<body>
+<body x-data="miSucursalApp()"> <!--asignando alpinejs a la clase-->
     <header>
         <h1>Mi Sucursal</h1>
         <nav>
@@ -20,30 +20,81 @@
 
     <main>
         <section>
+            <h2>Lista de Equipos</h2>
+            
+            <label>Filtrar por estado: 
+                <select x-model="filtroEstado">
+                    <option value="Todos">Todos</option>
+                    <option value="funcionando">Funcionando</option>
+                    <option value="con falla">Con falla</option>
+                    <option value="fuera de servicio">Fuera de servicio</option>
+                </select> <!-- cada vez que seleccionemos una opcion se actualiza el filtro altiro-->
+            </label>
+
             <table>
-                <label> <h2>Lista de Equipos</h2> </label>
                 <thead>
                     <tr>
                         <th>Equipo</th>
-                        <th>Estado del equipo</th> <!-- Funcionando, con falla o fuera de servicio -->
+                        <th>Estado del equipo</th>
+                        <th>Acción (Simulada)</th> 
                     </tr>
                 </thead>
-                
-                <tbody>
-                    <tr> <!-- Ejemplos -->
-                        <td>caja1</td> <td>funcionando</td>
-                    </tr>
-                    <tr>
-                        <td>impresora</td> <td>con falla</td>
-                    </tr>
-                    <tr>
-                        <td>balanza</td> <td>fuera de servicio</td>
-                    </tr>
-                </tbody>
 
+                <tbody>
+                    <template x-for="eq in equiposFiltrados" :key="eq.id"> <!-- recorre la lista total de equipos-->
+                        <tr>
+                            <td x-text="eq.nombre"></td>
+                            <td>
+                                <span x-text="eq.estado" :style="obtenerEstiloEstado(eq.estado)"></span> <!-- x-text insertam el nombre y el estado en cada celda de la tabla-->
+                            </td>
+                            <td>
+                                <button @click="cambiarEstado(eq)">Cambiar Estado</button>
+                            </td>
+                        </tr>
+                    </template>
+
+                    <template x-if="equiposFiltrados.length === 0">
+                        <tr>
+                            <td colspan="3" style="text-align: center;">No hay equipos con este estado.</td> <!--obviamente si no hay ningun equipo para filtrar, suelta el mensaje-->
+                        </tr>
+                    </template>
+                </tbody>
             </table>
         </section>
     </main>
-    
+ 
+    <script> // aplicamos lo de arriba
+        function miSucursalApp() {
+            return {
+                filtroEstado: 'Todos',
+                equipos: [
+                    { id: 1, nombre: 'caja1', estado: 'funcionando' },
+                    { id: 2, nombre: 'impresora', estado: 'con falla' },
+                    { id: 3, nombre: 'balanza', estado: 'fuera de servicio' } //datos de prueba
+                ],
+
+                get equiposFiltrados() {
+                    if (this.filtroEstado === 'Todos') return this.equipos;
+                    return this.equipos.filter(e => e.estado.toLowerCase() === this.filtroEstado.toLowerCase());
+                },
+
+                cambiarEstado(eq) {
+                    if (eq.estado === 'funcionando') {
+                        eq.estado = 'con falla';
+                    } else if (eq.estado === 'con falla') {
+                        eq.estado = 'fuera de servicio';
+                    } else {
+                        eq.estado = 'funcionando';
+                    }
+                },
+
+                obtenerEstiloEstado(estado) {
+                    if (estado === 'funcionando') return 'color: green; font-weight: bold;';
+                    if (estado === 'con falla') return 'color: orange; font-weight: bold;';
+                    return 'color: red; font-weight: bold;';
+                }
+            }
+        }
+    </script>
 </body>
 </html>

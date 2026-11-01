@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte de Falla</title>
-
     <link rel="stylesheet" href="../css/reportado.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> <!-- agregamos alpinejs a la clase-->
 </head>
-<body>
+<body x-data="reporteFallaApp()"> <!--asignando alpinejs a la clase-->
     <header>
         <h1>Reporte de Falla</h1>
         <nav>
@@ -16,33 +16,68 @@
     </header>
 
     <main>
-        <form id="formReporte"> <!--cree otro css pq mucho texto en el usu-->
+        <template x-if="mensaje">
+            <div style="background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px; border-radius: 5px; text-align: center;" x-text="mensaje"></div>
+        </template> <!--nos muestra si se cargo con exito o hubo error-->
+        
+        <form @submit.prevent="registrarIncidencia"> 
             <h3>Registrar incidencia</h3>
 
             <div>
                 <label for="sucursal">Número de sucursal</label>
-                <input type="number" id="sucursal" name="sucursal" required>
+                <input type="number" id="sucursal" name="sucursal" x-model="sucursal" required>
             </div>
 
             <div>
                 <label for="equipo">Nombre de equipo</label>
-                <input type="text" id="equipo" name="equipo" required>
+                <input type="text" id="equipo" name="equipo" x-model="equipo" required>
             </div>
 
             <div>
                 <label for="estadoEquipo">Estado actual del equipo</label>
-                <input type="text" id="estadoEquipo" name="estadoEquipo" required>
+                <input type="text" id="estadoEquipo" name="estadoEquipo" x-model="estadoEquipo" required>
             </div>
 
             <div>
                 <label for="detalle">Detalles de la incidencia</label>
-                <textarea id="detalle" name="detalle" required></textarea>
+                <textarea id="detalle" name="detalle" x-model="detalle" required></textarea>
             </div>
 
             <div class="acc-form">
                 <button type="submit">Reportar incidencia</button>
             </div>
-        </form>
+        </form> <!-- lo mas destacable desde la linea 26 para abajo es el x-modelo, el cual simplemente guarda automaticamente cada variable en milisegundos-->
     </main>
+
+    <script> //
+        function reporteFallaApp() {
+            return {
+                sucursal: '',
+                equipo: '',
+                estadoEquipo: '',
+                detalle: '',
+                mensaje: '',
+                registrarIncidencia() { //datos de prueba
+
+                    if (!this.sucursal || !this.equipo || !this.estadoEquipo || !this.detalle) {
+                        alert('Por favor, completa todos los campos.');
+                        return;
+                    }// si falta algun dato tira el mensaje de alert
+
+                    this.mensaje = '¡Incidencia registrada y enviada a soporte con éxito!'; // si ya se anoto todo y esta correcto, nos muestra el mensaje de exito
+                    
+                    this.sucursal = '';
+                    this.equipo = '';
+                    this.estadoEquipo = '';
+                    this.detalle = ''; //desde la linea 69 hasta la 72, generamos una limpieza de los campos
+
+                    setTimeout(() => {
+                        this.mensaje = '';
+                    }, 4000); // luego de tener todo listo, pasan 4 segundos y se borra el mensaje de exito, es algo para estetica principalmente
+                }
+            }
+        }
+    </script>
+
 </body>
 </html>
